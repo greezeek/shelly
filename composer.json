@@ -1,0 +1,21 @@
+{
+  "name": "greezeek/Shelly",
+  "description": "Tool for execution php scripts via shell",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Maxim M Grizik",
+      "email": "max@grizik.ru"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.4.0",
+    "twig/twig": "~1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "greezeek\\Shelly\\": "src/Shelly/"
+    }
+  }
+}
