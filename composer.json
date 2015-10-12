@@ -13,9 +13,14 @@
     "php": ">=5.4.0",
     "twig/twig": "~1.0"
   },
+  "require-dev": {
+    "php": ">=5.4.0",
+    "twig/twig": "~1.0",
+    "phpunit/phpunit": "5.0.*"
+  },
   "autoload": {
     "psr-4": {
-      "greezeek\\Shelly\\": "src/Shelly/"
+      "Shelly\\": "src/Shelly/"
     }
   }
 }

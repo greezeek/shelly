@@ -1,5 +1,5 @@
 <?php
-namespace Shelly\Interaction;
+namespace Shelly;
 
 /**
  * Class ShellInterface
@@ -8,6 +8,7 @@ namespace Shelly\Interaction;
 class ShellInterface implements IshellInterface
 {
 
+    const STRING_REQUIRED = 'String required';
     /**
      * @inheritdoc
      */
@@ -25,6 +26,9 @@ class ShellInterface implements IshellInterface
      */
     public function write($line)
     {
+        if(!is_string($line)){
+            throw new \Exception('String required');
+        }
         print $line;
     }
 

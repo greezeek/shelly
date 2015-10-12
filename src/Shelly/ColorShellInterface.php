@@ -1,7 +1,7 @@
 <?php
-namespace Shelly\Interaction;
+namespace Shelly;
 
-use Shelly\Interaction\Decorator\AbstractDecorator;
+use Shelly\Decorator\AbstractDecorator;
 
 /**
  * Class ColorShellInterface
@@ -11,7 +11,8 @@ class ColorShellInterface extends ShellInterface
 {
 
     const MSG_DECORATOR_NO_NAME = 'Decorator should have a name';
-    const MSG_DECORATOR_ARRAY_EXPECTED = 'Array should be passed: [$name, $type, $params]';
+    const MSG_DECORATOR_CLASS_NOT_EXISTS = 'Decorator class does not exists';
+    const MSG_DECORATOR_NOT_EXISTS = 'Decorator does not exists';
 
     /**
      * @property bool $colorEnabled
@@ -32,10 +33,7 @@ class ColorShellInterface extends ShellInterface
     {
 
         foreach ($decorators as $decorator) {
-            if (!is_array($decorator)) {
-                throw new \Exception(self::MSG_DECORATOR_ARRAY_EXPECTED);
-            }
-            if (!isset($decorator['name']) || !strlen(($name = trim($decorator['name'])))) {
+            if (empty($decorator['name'])) {
                 throw new \Exception(self::MSG_DECORATOR_NO_NAME);
             }
 
@@ -47,7 +45,7 @@ class ColorShellInterface extends ShellInterface
                 $params = [];
             }
 
-            $this->addDecorator($name, $type, $params);
+            $this->addDecorator($decorator['name'], $type, $params);
         }
 
     }
@@ -61,27 +59,51 @@ class ColorShellInterface extends ShellInterface
      */
     public function addDecorator($name, $type = '', array $options = ['bg' => false])
     {
-        $decoratorClass = 'Shell\Interaction\Decorator\ShellDecorator' . ucfirst($type);
+        $decoratorClass = 'Shelly\Decorator\ShellDecorator' . ucfirst($type);
+
+        if (empty($name)) {
+            throw new \Exception(self::MSG_DECORATOR_NO_NAME);
+        }
 
         if (isset($this->decorators[$name])) {
             unset ($this->decorators[$name]);
         }
 
+        if (!class_exists($decoratorClass)) {
+            throw new \Exception(self::MSG_DECORATOR_CLASS_NOT_EXISTS);
+        }
+
         $this->decorators[$name] = new $decoratorClass($this, $options);
     }
+
 
     /**
      * @param $name
      * @param $val
+     * @throws \Exception
      */
     public function decorate($name, $val)
     {
+        if (!in_array($name, $this->decorators)) {
+            throw new \Exception(self::MSG_DECORATOR_NOT_EXISTS);
+        }
         $this->write($this->decorators[$name]->decorate($val));
     }
 
-    public function decorateRead($name, $hellomessage = ' ? ') {
+    public function decorateRead($name, $hellomessage = ' ? ')
+    {
         $this->decorate($name, $hellomessage);
         return $this->read();
+    }
+
+    /**
+     * @param string $name
+     */
+    public function getDecorator($name)
+    {
+        if(array_key_exists($name, $this->decorators))
+            return $this->decorators[$name];
+        throw new \Exception(self::MSG_DECORATOR_NOT_EXISTS);
     }
 
 

@@ -1,5 +1,5 @@
 <?php
-namespace Shelly\Interaction;
+namespace Shelly;
 
 /**
  * Class ColorShellInterfaceLegacy

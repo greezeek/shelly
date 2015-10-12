@@ -1,8 +1,8 @@
 <?php
 
-namespace Shelly\Interaction\Decorator;
+namespace Shelly\Decorator;
 
-use Shelly\Interaction\ColorShellInterface;
+use Shelly\ColorShellInterface;
 
 
 class ShellDecoratorTemplate extends AbstractDecorator {
@@ -14,7 +14,7 @@ class ShellDecoratorTemplate extends AbstractDecorator {
 
     public function __construct (ColorShellInterface $decorator,  $options) {
         $this->decorator = $decorator;
-        $this->markup = $options['markup'];
+        $this->markup = !empty($options['markup'])?$options['markup']:'';
     }
 
 

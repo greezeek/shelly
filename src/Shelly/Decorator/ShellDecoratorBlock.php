@@ -1,8 +1,8 @@
 <?php
 
-namespace Shelly\Interaction\Decorator;
+namespace Shelly\Decorator;
 
-use Shelly\Interaction\ColorShellInterface;
+use Shelly\ColorShellInterface;
 use Shelly\String;
 
 class ShellDecoratorBlock extends AbstractDecorator

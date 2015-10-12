@@ -1,7 +1,7 @@
 <?php
 
-namespace Shelly\Interaction\Decorator;
-use Shelly\Interaction\ColorShellInterface;
+namespace Shelly\Decorator;
+use Shelly\ColorShellInterface;
 
 class ShellDecorator extends AbstractDecorator {
     protected  $eol;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Shelly\Interaction\Decorator;
+namespace Shelly\Decorator;
 
-use Shelly\Interaction\ColorShellInterface;
+use Shelly\ColorShellInterface;
 
 abstract class AbstractDecorator
 {
@@ -10,6 +10,7 @@ abstract class AbstractDecorator
     protected $decorator;
     protected $fg;
     protected $bg;
+    protected $bold;
 
     public static $colors = array(
         'black' => 30,
