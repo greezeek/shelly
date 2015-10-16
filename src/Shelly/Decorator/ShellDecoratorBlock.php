@@ -5,7 +5,7 @@ namespace Shelly\Decorator;
 use Shelly\ColorShellInterface;
 use Shelly\String;
 
-class ShellDecoratorBlock extends AbstractDecorator
+class ShellDecoratorBlock extends AbstractSingleColorDecorator
 {
     const ALIGN_LEFT = 'left';
     const ALIGN_RIGHT = 'right';
@@ -45,9 +45,9 @@ class ShellDecoratorBlock extends AbstractDecorator
         $val = $this->arrayFixedWidthSaveWords($val, $stringLength);
 
         $ret =
-            ($this->decorator->isColorEnabled() ? self::printColourStamp($this->getColor()) : '')
+            ($this->decorator->isColorEnabled() ? $this->getColor() : '')
             . $blank
-            . ($this->decorator->isColorEnabled() ? self::printColourStamp(self::$colors['normal']) : '') . PHP_EOL;
+            . ($this->decorator->isColorEnabled() ? $this->resetColor() : '') . PHP_EOL;
 
         foreach ($val as $v) {
 
@@ -72,15 +72,15 @@ class ShellDecoratorBlock extends AbstractDecorator
             }
 
             $ret .=
-                ($this->decorator->isColorEnabled() ? self::printColourStamp($this->getColor()) : '') .
+                ($this->decorator->isColorEnabled() ? $this->getColor() : '') .
                 $marginLeft . $v . $marginRight
-                . ($this->decorator->isColorEnabled() ? self::printColourStamp(self::$colors['normal']) : '') . PHP_EOL;
+                . ($this->decorator->isColorEnabled() ? $this->resetColor() : '') . PHP_EOL;
         }
 
         $ret .=
-            ($this->decorator->isColorEnabled() ? self::printColourStamp($this->getColor()) : '')
+            ($this->decorator->isColorEnabled() ? $this->getColor() : '')
             . $blank
-            . ($this->decorator->isColorEnabled() ? self::printColourStamp(self::$colors['normal']) : '') . PHP_EOL;
+            . ($this->decorator->isColorEnabled() ? $this->resetColor() : '') . PHP_EOL;
 
         return $ret;
     }

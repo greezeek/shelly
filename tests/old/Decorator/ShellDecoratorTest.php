@@ -8,7 +8,7 @@ class ShellDecoratorTest extends PHPUnit_Framework_TestCase
      */
     public function testInitDecorator($eol, $fg, $bg, $bold, $exp)
     {
-        $i = new \Shelly\ColorShellInterface();
+        $i = new \Shelly\ColorShellInterface(new \Shelly\Palette());
         $d = new \Shelly\Decorator\ShellDecorator($i, ['eol' => $eol, 'fg'=>$fg, 'bg' => $bg, 'bold' => $bold]);
 
         $this->assertAttributeEquals([
@@ -42,7 +42,7 @@ class ShellDecoratorTest extends PHPUnit_Framework_TestCase
 
     public function testInitDecoratorUnknownOption()
     {
-        $i = new \Shelly\ColorShellInterface();
+        $i = new \Shelly\ColorShellInterface(new \Shelly\Palette());
         $this->setExpectedException('Exception', \Shelly\Decorator\ShellDecorator::MSG_UNKNOWN_OPTION);
         $d = new \Shelly\Decorator\ShellDecorator($i, ['eol' => true, 'fg'=>'normal', 'bg' => 'red', 'bold' => true, 'unknown' => 'eee']);
 
@@ -55,7 +55,7 @@ class ShellDecoratorTest extends PHPUnit_Framework_TestCase
      */
     public function testInitDecoratorBadParameter($eol, $fg, $bg, $bold)
     {
-        $i = new \Shelly\ColorShellInterface();
+        $i = new \Shelly\ColorShellInterface(new \Shelly\Palette());
         $this->setExpectedException('Exception', \Shelly\Decorator\ShellDecorator::MSG_INVALID_OPTION_VALUE);
         $d = new \Shelly\Decorator\ShellDecorator($i, ['eol' => $eol, 'fg'=>$fg, 'bg' => $bg, 'bold' => $bold]);
     }
@@ -73,7 +73,7 @@ class ShellDecoratorTest extends PHPUnit_Framework_TestCase
      */
     public function testDecoratorDisabledColor($eol, $fg, $bg, $bold, $exp)
     {
-        $i = new \Shelly\ColorShellInterface();
+        $i = new \Shelly\ColorShellInterface(new \Shelly\Palette());
         $i->disableColour();
         $d = new \Shelly\Decorator\ShellDecorator($i, ['eol' => $eol, 'fg'=>$fg, 'bg' => $bg, 'bold' => $bold]);
 
@@ -90,28 +90,28 @@ class ShellDecoratorTest extends PHPUnit_Framework_TestCase
             [true, 'normal', 'red', false, "test" . PHP_EOL],
         ];
     }
-
+/*
     /**
      * @dataProvider getColorDataProvider
      */
-    public function testGetColor($fg, $bg, $bold, $exp)
+    /*public function testGetColor($fg, $bg, $bold, $exp)
     {
 
-        $this->assertEquals(\Shelly\Decorator\ShellDecorator::sGetColor($fg, $bg, $bold),$exp);
-    }
+        $this->assertEquals(\Shelly\Decorator\ShellDecorator::getColor($fg, $bg, $bold),$exp);
+    }*/
 
 
     /**
      * @dataProvider nonexGetColorDataProvider
      */
-    public function testGetNeColorStamp($fg, $bg, $bold)
+    /*public function testGetNeColorStamp($fg, $bg, $bold)
     {
         $this->setExpectedException('Exception', \Shelly\Decorator\ShellDecorator::MSG_COLOR_NOT_EXISTS);
 
         \Shelly\Decorator\ShellDecorator::sGetColor($fg, $bg, $bold);
-    }
+    }*/
 
-
+/*
     public function getColorDataProvider()
     {
         return [
@@ -121,7 +121,7 @@ class ShellDecoratorTest extends PHPUnit_Framework_TestCase
             ['normal', 'red', true, "1;41;0"],
             ['normal', 'red', false, "41;0"]
         ];
-    }
+    }*/
 
     public function nonexGetColorDataProvider()
     {
@@ -135,10 +135,10 @@ class ShellDecoratorTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider colorStampDataProvider
      */
-    public function testPrintColorStamp($val, $exp)
+    /*public function testPrintColorStamp($val, $exp)
     {
         $this->assertEquals(\Shelly\Decorator\ShellDecorator::printColourStamp($val), $exp);
-    }
+    }*/
 
     public function colorStampDataProvider()
     {
@@ -157,21 +157,21 @@ class ShellDecoratorTest extends PHPUnit_Framework_TestCase
      */
     public function testToStringDecorator($eol, $fg, $bg, $bold, $exp)
     {
-        $i = new \Shelly\ColorShellInterface();
+        $i = new \Shelly\ColorShellInterface(new \Shelly\Palette());
         $d = new \Shelly\Decorator\ShellDecorator($i, ['eol' => $eol, 'fg'=>$fg, 'bg' => $bg, 'bold' => $bold]);
 
-        $this->assertEquals((string)$d,$exp);
+        $this->assertEquals($exp,(string)$d);
 
     }
 
     public function toStringDecoratorDataProvider()
     {
         return [
-            [true, 'normal', 'red', true, "1;41;0"],
-            [true, 'blue', 'yellow', true, "1;43;34"],
-            [false, 'normal', 'red', false, "41;0"],
-            [false, 'normal', 'red', true, "1;41;0"],
-            [true, 'normal', 'red', false, "41;0"],
+            [true, 'normal', 'red', true, "\033[1;41;0m"],
+            [true, 'blue', 'yellow', true, "\033[1;43;34m"],
+            [false, 'normal', 'red', false, "\033[41;0m"],
+            [false, 'normal', 'red', true, "\033[1;41;0m"],
+            [true, 'normal', 'red', false, "\033[41;0m"],
 
         ];
     }
@@ -183,7 +183,7 @@ class ShellDecoratorTest extends PHPUnit_Framework_TestCase
      */
     public function testToStringDecoratorBadParam($eol, $fg, $bg, $bold)
     {
-        $i = new \Shelly\ColorShellInterface();
+        $i = new \Shelly\ColorShellInterface(new \Shelly\Palette());
 
         $this->setExpectedException('Exception', \Shelly\Decorator\ShellDecorator::MSG_INVALID_OPTION_VALUE);
         $d = new \Shelly\Decorator\ShellDecorator($i, ['eol' => $eol, 'fg'=>$fg, 'bg' => $bg, 'bold' => $bold]);

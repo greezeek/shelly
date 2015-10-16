@@ -3,77 +3,40 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendo
 
 class ColorShellInterfaceTest extends PHPUnit_Framework_TestCase
 {
-    public function testColorEnabled()
-    {
-        $i = new \Shelly\ColorShellInterface();
-
-        $i->enableColour();
-        $this->assertTrue($i->isColorEnabled());
-
-        $i->disableColour();
-        $this->assertFalse($i->isColorEnabled());
-
-    }
-
-    public function testBadAddDecorator()
-    {
-        $i = new \Shelly\ColorShellInterface();
-        $this->setExpectedException('Exception', \Shelly\ColorShellInterface::MSG_DECORATOR_NOT_EXISTS);
-        $i->decorate('ne', '123');
-    }
-
-    public function testInitDecoratorNoName()
-    {
-        $this->setExpectedException('Exception', \Shelly\ColorShellInterface::MSG_DECORATOR_NO_NAME);
-        $i = new \Shelly\ColorShellInterface([[]]);
-    }
-
-    public function testAddDecoratorNoName()
-    {
-        $this->setExpectedException('Exception', \Shelly\ColorShellInterface::MSG_DECORATOR_NO_NAME);
-        $i = new \Shelly\ColorShellInterface();
-        $i->addDecorator('');
-    }
-
-    public function testAddDecoratorNotExists()
-    {
-        $this->setExpectedException('Exception', \Shelly\ColorShellInterface::MSG_DECORATOR_CLASS_NOT_EXISTS);
-        $i = new \Shelly\ColorShellInterface();
-        $i->addDecorator('one', 'nex');
-    }
 
     /**
-     * @dataProvider decoratorsProvider
+     * @covers ColorShellInterface::__construct
      */
-    public function testGetDecorator($name, $type, $options, $exp){
-        $i = new \Shelly\ColorShellInterface();
-        $i->addDecorator($name, $type, $options);
-        $this->assertInstanceOf($exp, $i->getDecorator($name));
-    }
-
-
-    public function testGetNotExistedDecorator()
+    public function testConstruct()
     {
-        $i = new \Shelly\ColorShellInterface();
-        $this->setExpectedException('Exception', \Shelly\ColorShellInterface::MSG_DECORATOR_NOT_EXISTS);
-        $i->getDecorator('neDecorator');
+        $si = new \Shelly\ColorShellInterface(new \Shelly\Palette(), [['name' => 'test', 'type' => 'block']]);
+
+        $this->assertAttributeInstanceOf('Shelly\Palette', 'palette', $si);
+        $this->assertAttributeCount(1, 'decorators', $si);
+
+        $property = new ReflectionProperty('\Shelly\ColorShellInterface', 'decorators');
+        $property->setAccessible(true);
+
+        $val = $property->getValue($si);
+
+        $this->assertInstanceOf('Shelly\Decorator\ShellDecoratorBlock', $val['test']);
+
+        $si->addDecorator('test', '');
+        $si->addDecorator('block', 'block');
+        $si->addDecorator('template', 'template');
+        $si->addDecorator('instance',
+            new \Shelly\Decorator\ShellDecoratorBlock($si, ['bg'=>'red'])
+        );
+
+        $this->assertAttributeCount(4, 'decorators', $si);
+
+        $val = $property->getValue($si);
+
+        $this->assertInstanceOf('Shelly\Decorator\ShellDecorator', $val['test']);
+        $this->assertInstanceOf('Shelly\Decorator\ShellDecoratorBlock', $val['block']);
+        $this->assertInstanceOf('Shelly\Decorator\ShellDecoratorTemplate', $val['template']);
+        $this->assertInstanceOf('Shelly\Decorator\ShellDecoratorBlock', $val['instance']);
+
     }
 
-
-    public function testResetDecorator()
-    {
-        $i = new \Shelly\ColorShellInterface();
-        $i->addDecorator('one', '', []);
-        $i->addDecorator('one', 'block', []);
-        $this->assertInstanceOf('Shelly\\Decorator\\ShellDecoratorBlock', $i->getDecorator('one'));
-    }
-
-    public function decoratorsProvider()
-    {
-        return [
-            ['one', '', [], 'Shelly\\Decorator\\ShellDecorator'],
-            ['two', 'block', [], 'Shelly\\Decorator\\ShellDecoratorBlock'],
-            ['three', 'template', [], 'Shelly\\Decorator\\ShellDecoratorTemplate']
-        ];
-    }
 }

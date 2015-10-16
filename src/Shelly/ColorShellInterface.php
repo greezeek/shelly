@@ -14,6 +14,11 @@ class ColorShellInterface extends ShellInterface
     const MSG_DECORATOR_CLASS_NOT_EXISTS = 'Decorator class does not exists';
     const MSG_DECORATOR_NOT_EXISTS = 'Decorator does not exists';
 
+
+    /**
+     * @var Palette
+     */
+    protected $palette;
     /**
      * @property bool $colorEnabled
      */
@@ -25,55 +30,75 @@ class ColorShellInterface extends ShellInterface
     protected $decorators = [];
 
     /**
+     * @param Palette $palette
      * @param array[] $decorators
      * @throws \Exception
-     * @todo: overload params
      */
-    public function __construct(array $decorators = [])
+    public function __construct(Palette $palette, array $decorators = [])
     {
+        $this->setPalette($palette);
 
         foreach ($decorators as $decorator) {
-            if (empty($decorator['name'])) {
+
+            if (!array_key_exists('name', $decorator) || empty($decorator['name'])) {
                 throw new \Exception(self::MSG_DECORATOR_NO_NAME);
             }
 
-            if (!isset($decorator['type']) || !is_string($type = $decorator['type'])) {
-                $type = '';
-            }
-
-            if (!isset($decorator['params']) || !is_array($params = $decorator['params'])) {
-                $params = [];
-            }
+            $type = array_key_exists('type', $decorator) ? $decorator['type'] : null;
+            $params = array_key_exists('params', $decorator) ? $decorator['params'] : [];
 
             $this->addDecorator($decorator['name'], $type, $params);
         }
 
     }
 
+    /**
+     * @param Palette $palette
+     */
+    public function setPalette(Palette $palette)
+    {
+        $this->palette = $palette;
+    }
 
     /**
-     * @param $name
-     * @param string $type
-     * @param array $options
-     * @todo: overload params
+     * @return Palette
      */
-    public function addDecorator($name, $type = '', array $options = ['bg' => false])
+    public function getPalette()
     {
-        $decoratorClass = 'Shelly\Decorator\ShellDecorator' . ucfirst($type);
+        return $this->palette;
+    }
 
+
+    /**
+     * @param string $name
+     * @param string|AbstractDecorator $type
+     * @param array $options
+     * @return $this
+     * @throws \Exception
+     */
+    public function addDecorator($name, $type = '', array $options = [])
+    {
         if (empty($name)) {
             throw new \Exception(self::MSG_DECORATOR_NO_NAME);
         }
 
-        if (isset($this->decorators[$name])) {
-            unset ($this->decorators[$name]);
-        }
+        if($type instanceof AbstractDecorator) {
+            $this->decorators[$name] = $type;
+        } else {
 
-        if (!class_exists($decoratorClass)) {
-            throw new \Exception(self::MSG_DECORATOR_CLASS_NOT_EXISTS);
-        }
+            $decoratorClass = 'Shelly\Decorator\ShellDecorator' . ucfirst($type);
 
-        $this->decorators[$name] = new $decoratorClass($this, $options);
+            if (isset($this->decorators[$name])) {
+                unset ($this->decorators[$name]);
+            }
+
+            if (!class_exists($decoratorClass)) {
+                throw new \Exception(self::MSG_DECORATOR_CLASS_NOT_EXISTS);
+            }
+
+            $this->decorators[$name] = new $decoratorClass($this, $options);
+        }
+        return $this;
     }
 
 

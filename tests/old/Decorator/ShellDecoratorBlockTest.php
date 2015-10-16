@@ -10,7 +10,7 @@ class ShellDecoratorBlockTest extends PHPUnit_Framework_TestCase
      */
     public function testFindClosestSymbol($string, $symbol, $position, $exp) {
 
-        $d = new \Shelly\Decorator\ShellDecoratorBlock(new \Shelly\ColorShellInterface(), []);
+        $d = new \Shelly\Decorator\ShellDecoratorBlock(new \Shelly\ColorShellInterface(new \Shelly\Palette()), []);
 
         $r = $d->findClosestSymbol($string, $symbol, $position);
 
@@ -36,7 +36,7 @@ class ShellDecoratorBlockTest extends PHPUnit_Framework_TestCase
      */
     public function testArrayFixedWidthSaveWords($str, $len, $res)
     {
-        $d = new \Shelly\Decorator\ShellDecoratorBlock(new \Shelly\ColorShellInterface(), []);
+        $d = new \Shelly\Decorator\ShellDecoratorBlock(new \Shelly\ColorShellInterface(new \Shelly\Palette()), []);
 
         $r = $d->arrayFixedWidthSaveWords($str, $len);
 
@@ -82,7 +82,7 @@ class ShellDecoratorBlockTest extends PHPUnit_Framework_TestCase
      */
     public function testInit($w, $m, $a, $bold, $fg, $bg,  $text, $exp)
     {
-        $d = new \Shelly\Decorator\ShellDecoratorBlock(new \Shelly\ColorShellInterface(), [
+        $d = new \Shelly\Decorator\ShellDecoratorBlock(new \Shelly\ColorShellInterface(new \Shelly\Palette()), [
             'width' => $w,
             'margin' => $m,
             'align' => $a,
@@ -151,7 +151,7 @@ class ShellDecoratorBlockTest extends PHPUnit_Framework_TestCase
     public function testInitBadParams($w, $m, $a, $bold, $fg, $bg)
     {
         $this->setExpectedException('Exception', \Shelly\Decorator\ShellDecoratorBlock::MSG_INVALID_OPTION_VALUE);
-        $d = new \Shelly\Decorator\ShellDecoratorBlock(new \Shelly\ColorShellInterface(), [
+        $d = new \Shelly\Decorator\ShellDecoratorBlock(new \Shelly\ColorShellInterface(new \Shelly\Palette()), [
             'width' => $w,
             'margin' => $m,
             'align' => $a,
@@ -181,6 +181,7 @@ class ShellDecoratorBlockTest extends PHPUnit_Framework_TestCase
     public function testAutoColumns()
     {
         $siStub = $this->getMockBuilder('\Shelly\ColorShellInterface')
+            ->setConstructorArgs([new \Shelly\Palette()])
             ->setMethods(['getCols'])
             ->getMock();
         $siStub->method('getCols')->will($this->returnValue('20'));

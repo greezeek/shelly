@@ -3,7 +3,7 @@
 namespace Shelly\Decorator;
 use Shelly\ColorShellInterface;
 
-class ShellDecorator extends AbstractDecorator {
+class ShellDecorator extends AbstractSingleColorDecorator {
 
     public function initDefaultOptions()
     {

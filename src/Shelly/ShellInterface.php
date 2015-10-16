@@ -8,7 +8,7 @@ namespace Shelly;
 class ShellInterface implements IshellInterface
 {
 
-    const STRING_REQUIRED = 'String required';
+    const MSG_STRING_REQUIRED = 'String required';
     /**
      * @inheritdoc
      */
@@ -27,7 +27,7 @@ class ShellInterface implements IshellInterface
     public function write($line)
     {
         if(!is_string($line)){
-            throw new \Exception('String required');
+            throw new \Exception(self::MSG_STRING_REQUIRED);
         }
         print $line;
     }
